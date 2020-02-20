@@ -2,7 +2,7 @@ const Router = require('koa-router');
 const User = require('../models/user');
 const validateAuthRoutes = require('../middleware/validation/validateAuthRoutes');
 const bcrypt = require('bcrypt');
-const getUserByUsername = require('../middleware/authenticate');
+// const getUserByUsername = require('../middleware/authenticate');
 const permController = require('../middleware/permController');
 const jwt = require('../middleware/jwt');
 
@@ -68,8 +68,8 @@ async function createPasswordHash(ctx, next) {
   await next();
 }
 
-router.post('/', validateAuthRoutes.validateNewUser, getUserByUsername, createPasswordHash, async ctx => {
-
+// router.post('/', validateAuthRoutes.validateNewUser, getUserByUsername, createPasswordHash, async ctx => {
+router.post('/', validateAuthRoutes.validateNewUser, createPasswordHash, async ctx => {
   ctx.request.body.user.username = ctx.request.body.user.username.toLowerCase();
   ctx.request.body.user.email = ctx.request.body.user.email.toLowerCase();
 
@@ -81,8 +81,31 @@ router.post('/', validateAuthRoutes.validateNewUser, getUserByUsername, createPa
 
   ctx.assert(user, 401, 'Something went wrong.');
 
-  ctx.status = 201;
-  ctx.body = { user };
+  try {
+    const user = await User.query().insertAndFetch(newUser);
+    await knex('group_members').insert({ 'user_id': user.id, 'group_id': 'groupBasic' });
+    ctx.status = 201;
+    ctx.body = { user };
+  } catch (e) {
+    if (e.status === 503) {
+      e.headers = Object.assign({}, e.headers, { 'Retry-After': 30 });
+    } else {
+      ctx.throw(400, null, {
+        errors: [{
+          'id': '{unique identifier for this particular occurrence}',
+          'status': 400,
+          'code': e.code,
+          'title': e.name,
+          'detail': e.constraint,
+          'source': {
+            'pointer': 'email_or_password_exists',
+            'parameter': 'email_or_password_exists'
+          }
+        }]
+      });
+    }
+    throw e;
+  }
 });
 
 router.get('/:id', permController.requireAuth, async ctx => {
@@ -120,7 +143,7 @@ router.get('/', permController.requireAuth, permController.grantAccess('readAny'
     if (e.statusCode) {
       ctx.throw(e.statusCode, { message: 'The query key does not exist' });
       ctx.throw(e.statusCode, null, { errors: [e.message] });
-    } else { ctx.throw(400, null, { errors: [e.message] }); }
+    } else { ctx.throw(406, null, { errors: [e.message] }); }
     throw e;
   }
 
