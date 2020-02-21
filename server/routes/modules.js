@@ -98,7 +98,7 @@ router.post('/', validateModules, permController.requireAuth, permController.gra
     throw e;
   }
 
-  await insertType('module_lessons', lessons, modules.id);
+  // await insertType('module_lessons', lessons, modules.id);
 
   async function permObjects() {
     Object.keys(userPermissions)
@@ -162,7 +162,7 @@ router.put('/:id', permController.grantAccess('createAny', 'path'), async ctx =>
   modules['permissions'] = await permObjects();
   ctx.body = { modules };
 });
-router.delete('/:id',permController.grantAccess('deleteOwn', 'path'), async ctx => {
+router.delete('/:id', permController.grantAccess('deleteOwn', 'path'), async ctx => {
   let modules = await Module.query().findById(ctx.params.id);
 
   if (modules === undefined) {

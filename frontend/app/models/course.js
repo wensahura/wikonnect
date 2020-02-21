@@ -8,7 +8,7 @@ export default class CourseModel extends Model {
   @attr() status;
   @attr() slug;
   @attr() enrolled;
-  @attr('number') progress;
+  // @attr('number') progress;
   @attr() permission;
   @belongsTo('user') creator;
   @hasMany('module') modules;

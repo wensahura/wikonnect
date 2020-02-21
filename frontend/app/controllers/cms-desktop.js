@@ -17,12 +17,18 @@ export default class CmsDesktopController extends Controller {
 
   @computed('name')
   get courseSlug() {
-    return "slug";
-    //return this.get('name').replace(/\s/g, "-");
+    //return "slugr";
+    return name.replace(/\s/g, "-");
   }
 
   get coursemodel() {
     return this.store.createRecord('course', {
+      creator: this.me.get('user')
+    });
+  }
+
+  get modulemodel() {
+    return this.store.createRecord('module', {
       creator: this.me.get('user')
     });
   }
@@ -65,8 +71,22 @@ export default class CmsDesktopController extends Controller {
 
   @action
   saveCourse(model) {
+    console.log(model.name);
+    let slug = model.name.replace(/\s/g, "-");
     model.setProperties({
-      slug: this.get('courseSlug'),
+      slug: slug,
+      status: "published"
+    });
+    model.save();
+  }
+
+
+  @action
+  saveModule(model) {
+    console.log(model.name);
+    let slug = model.name.replace(/\s/g, "-");
+    model.setProperties({
+      slug: slug,
       status: "published"
     });
     model.save();

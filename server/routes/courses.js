@@ -118,7 +118,7 @@ router.post('/', permController.grantAccess('createAny', 'path'), validateCourse
     } else { ctx.throw(400, null, { errors: ['Bad Request'] }); }
     throw e;
   }
-  await insertType('course_modules', modules, course.id);
+  // await insertType('course_modules', modules, course.id);
 
   function permObjects() {
     Object.keys(userPermissions)
