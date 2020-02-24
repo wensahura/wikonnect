@@ -20,12 +20,10 @@
     <ul class="list-group list-group-flush">
 
       {{#each allCourses as |course|}}
-
-        <button class=" flat-button no-decoration" href="#" {{action "selectCourse" course.slug}}>
-          <li class="list-group-item">{{course.name}} <br><span>{{course.description}}</span></li>
-        </button>
-      {{/each}}
-    </ul>
+        <CmsListItem @title={{course.name}} @description={{course.description}} @viewMoreLabel="See Modules"
+          @viewMore={{action "selectCourse" course.slug }} @editLabel="See Modules"
+          @edit={{action "selectCourse" course.slug}} />
+      {{/each}} </ul>
     <div class="card-footer">
 
     </div>
@@ -45,9 +43,9 @@
     <ul class="list-group list-group-flush">
       {{#each selectedCourse.modules as |module|}}
 
-        <button class=" flat-button no-decoration" href="#" {{action "selectModule" module.slug}}>
-          <li class="list-group-item">{{module.name}} <br><span>{{module.description}}</span></li>
-        </button>
+        <CmsListItem @title={{module.name}} @description={{module.description}} @viewMoreLabel="See Modules"
+          @viewMore={{action "selectModule" module.slug }} @editLabel="See Lessons"
+          @edit={{action "selectModule" module.slug}} />
 
       {{/each}}
     </ul> <br>
@@ -74,9 +72,9 @@
 
       {{#each selectedModule.lessons as |lesson|}}
 
-        <button class=" flat-button no-decoration" href="#" {{action "selectLesson" lesson.slug}}>
-          <li class="list-group-item">{{lesson.name}} <br><span>{{lesson.description}}</span></li>
-        </button>
+        <CmsListItem @title={{lesson.name}} @description={{lesson.description}} @viewMoreLabel="See Chapters"
+          @viewMore={{action "selectLesson" lesson.slug }} @editLabel="See Chapters"
+          @edit={{action "selectLesson" lesson.slug}} />
 
       {{/each}}
     </ul> <br>
@@ -104,9 +102,11 @@
     <ul class="list-group list-group-flush">
       {{#each selectedLesson.chapters as |chapter|}}
 
-        <button class=" flat-button no-decoration" href="#" {{action "selectLesson" lesson.slug}}>
-          <li class="list-group-item">{{chapter.name}} <br><span>{{chapter.description}}</span></li>
-        </button>
+
+
+        <CmsListItem @title={{chapter.name}} @description={{chapter.description}} @viewMoreLabel="See Modules"
+          @viewMore={{action "selectCourse" chapter.slug }} @editLabel="See Modules"
+          @edit={{action "selectCourse" chapter.slug}} />
 
       {{/each}}
     </ul> <br>
