@@ -15,14 +15,14 @@
 
 
     <div class="card-header">
-      <h5>Course</h5><button class="btn btn-primary btn-sm " {{action "toggleCourseModal"}}>+ Create Course </button>
+      <h5>Course</h5><button class="btn btn-primary btn-sm " {{action "showCourseModal"}}>+ Create Course </button>
     </div>
     <ul class="list-group list-group-flush">
 
       {{#each allCourses as |course|}}
-        <CmsListItem @title={{course.name}} @description={{course.description}} @viewMoreLabel="See Modules"
-          @viewMore={{action "selectCourse" course.slug }} @editLabel="See Modules"
-          @edit={{action "selectCourse" course.slug}} />
+        <CmsListItem @title={{course.name}} @description={{course.description}} @primaryLabel="See Modules"
+          @primaryAction={{action "selectCourse" course.slug }} @secondaryLabel="Edit Course"
+          @secondaryAction={{action "editCourseClick" course.slug }} />
       {{/each}} </ul>
     <div class="card-footer">
 
@@ -32,27 +32,63 @@
 
   <div class="card cms-colum">
     <div class="card-header">
-      <h5>Module</h5><button class="btn btn-primary btn-sm " {{action "toggleModuleModal"}}>+ Create Module </button>
+      <h5>Module</h5><button class="btn btn-primary btn-sm " {{action "toggleModuleModal"}}>+ Create New Module
+      </button>
     </div>
-    <div class="padded">
-      {{!-- <BsAlert class="" @type="danger">
-        Select a course to add modules to it
-      </BsAlert> --}}
-    </div>
+
 
     <ul class="list-group list-group-flush">
-      {{#each selectedCourse.modules as |module|}}
+      {{#if selectedCourse}}
 
-        <CmsListItem @title={{module.name}} @description={{module.description}} @viewMoreLabel="See Modules"
-          @viewMore={{action "selectModule" module.slug }} @editLabel="See Lessons"
-          @edit={{action "selectModule" module.slug}} />
 
-      {{/each}}
+
+        {{#if selectedCourse.modules}}
+
+
+          {{#each selectedCourse.modules as |module|}}
+
+            <CmsListItem @title={{module.name}} @description={{module.description}} @primaryLabel="See Modules"
+              @primaryAction={{action "selectModule" module.slug }} @secondaryLabel="See Lessons"
+              @secondaryAction={{action "showEditCourseModal" }} />
+
+          {{/each}}
+        {{else}}
+          <div class="padded text-center">
+
+            <BsAlert class="padded" @type="warning">
+              No modules in selected course </BsAlert>
+
+          </div>
+        {{/if}}
+      {{else}}
+        <div class="padded text-center">
+
+          <BsAlert class="padded" @type="warning">
+            No course selected, select a course to view it's modules or create a new module
+          </BsAlert>
+
+
+        </div>
+      {{/if}}
     </ul> <br>
-    <div class="card-footer">
-      <button class=" btn btn-primary btn-sm " {{action "toggleModuleModal"}}>
-        + Add Module to {{selectedCourse.name}}
-      </button>
+    {{!-- @onChange={{action (mut selectedModule)}} --}}
+    <div class="padded">
+      <br>
+      <PowerSelect @placeholder="Search for Module" @searchEnabled={{true}} @options={{allModules}} @searchField="name"
+        @selected={{selectedModule}} @onChange={{action (mut selectedModule)}} as |module|>
+        {{module.name}}
+      </PowerSelect>
+      <br>
+    </div>
+
+    {{#if selectedModule}}
+      <CmsListItem @title={{selectedModule.name}} @description={{selectedModule.description}}
+        @primaryLabel={{if selectedCourse "Add this module to selectedCourse"}}
+        @primaryAction={{action "addModule" selectedModule }} />
+      <br>
+    {{/if}}
+    <div class=" card-footer">
+
     </div>
   </div>
 
@@ -62,26 +98,35 @@
     <div class="card-header">
       <h5>Lesson</h5><button class="btn btn-primary btn-sm " {{action "toggleModuleModal"}}>+ Create Lesson </button>
     </div>
-    <div class="padded">
-      {{!-- <BsAlert class="" @type="danger">
-        Select a course to add modules to it
-      </BsAlert> --}}
-    </div>
+
 
     <ul class="list-group list-group-flush">
 
       {{#each selectedModule.lessons as |lesson|}}
 
-        <CmsListItem @title={{lesson.name}} @description={{lesson.description}} @viewMoreLabel="See Chapters"
-          @viewMore={{action "selectLesson" lesson.slug }} @editLabel="See Chapters"
-          @edit={{action "selectLesson" lesson.slug}} />
+        <CmsListItem @title={{lesson.name}} @description={{lesson.description}} @primaryLabel="See Chapters"
+          @primaryAction={{action "selectLesson" lesson.slug }} @secondaryLabel="See Chapters"
+          @secondaryAction={{action "selectLesson" lesson.slug}} />
 
       {{/each}}
-    </ul> <br>
+    </ul>
+
+    <div class="padded">
+      <br>
+      <PowerSelect @placeholder="Search for Lesson" @searchEnabled={{true}} @options={{allLessons}} @searchField="name"
+        @selected={{selectedLesson}} @onChange={{action (mut selectedLesson)}} as |lesson|>
+        {{lesson.name}}
+      </PowerSelect>
+      <br>
+    </div>
+
+    {{#if selectedLesson}}
+      <CmsListItem @title={{selectedLesson.name}} @description={{selectedLesson.description}}
+        @primaryLabel="Add This lesson to My Module" @primaryAction={{action "addModule" selectedLesson }} />
+      <br>
+    {{/if}}
     <div class="card-footer">
-      <button class=" btn btn-primary btn-sm " {{action "toggleModuleModal"}}>
-        + Add Lesson to {{selectedModule.name}}
-      </button>
+
     </div>
   </div>
 
@@ -104,16 +149,14 @@
 
 
 
-        <CmsListItem @title={{chapter.name}} @description={{chapter.description}} @viewMoreLabel="See Modules"
-          @viewMore={{action "selectCourse" chapter.slug }} @editLabel="See Modules"
-          @edit={{action "selectCourse" chapter.slug}} />
+        <CmsListItem @title={{chapter.name}} @description={{chapter.description}} @primaryLabel="See Modules"
+          @primaryAction={{action "selectCourse" chapter.slug }} @secondaryLabel="See Modules"
+          @secondaryAction={{action "selectCourse" chapter.slug}} />
 
       {{/each}}
     </ul> <br>
     <div class="card-footer">
-      <button class=" btn btn-primary btn-sm " {{action "toggleModuleModal"}}>
-        + Add H5P to {{selectedLesson.name}}
-      </button>
+
     </div>
   </div>
 
@@ -121,9 +164,9 @@
 
 
 
-  <BsModalSimple @open={{createCourseModal}} @title="Create Course" @closeTitle={{null}} @submitTitle="Publish Course"
-    @size="" @closeButton={{true}} @fade={{true}} @backdrop={{true}} @backdropClose={{true}}
-    @onSubmit={{action "saveCourse"}} @onHidden={{action "toggleCourseModal"}} @renderInPlace={{true}}>
+  <BsModalSimple @open={{createCourseModal}} @title="Create Course" @closeTitle={{null}} @size="" @closeButton={{true}}
+    @fade={{true}} @backdrop={{true}} @backdropClose={{true}} @onHidden={{action "hideCourseModal"}}
+    @renderInPlace={{true}}>
 
     <BsForm @model={{coursemodel}} @onSubmit={{action "saveCourse"}} as |form|>
       <form.element @controlType="text" @label="Course Title" @property="name" />
@@ -134,12 +177,37 @@
     </BsForm>
   </BsModalSimple>
 
+
+  <BsModalSimple @open={{editCourseModal}} @title="Edit Course" @closeTitle={{null}} @size="" @closeButton={{true}}
+    @fade={{true}} @backdrop={{true}} @backdropClose={{true}} @onHidden={{action "hideEditCourseModal"}}
+    @renderInPlace={{true}}>
+
+    <BsForm @formLayout="vertical" @model={{myEditCourse}} @onSubmit={{action "submit"}} as |form|>
+      <form.element @label="Name" @placeholder="Name" @property="name" @required={{true}} />
+      <form.element @controlType="textarea" @label="Description" @property="description" />
+      {{!-- <BsButton @type="primary" @onClick={{action "addChapter"}}>Add a Chapter</BsButton> --}}
+
+
+      <div class="d-flex justify-content-between">
+        <BsButton @defaultText="Delete Course" @type="danger" @onClick={{action "deleteCourse" myEditCourse}}
+          @buttonType="submit" />
+        <BsButton @defaultText="Save Changes" @type="primary" @onClick={{action "saveCourse" myEditCourse}}
+          @buttonType="submit" />
+
+
+      </div>
+    </BsForm>
+  </BsModalSimple>
+
+
+
   <BsModalSimple @open={{createModuleModal}} @title="Simple Modal" @closeTitle="Ok" @submitTitle={{null}} @size=""
     @closeButton={{true}} @fade={{true}} @backdrop={{true}} @backdropClose={{true}} @onSubmit={{action "submit"}}
     @onHidden={{action "toggleModuleModal"}} @renderInPlace={{true}}>
     <BsForm @model={{modulemodel}} class="padded" @onSubmit={{action "saveModule"}} as |form|>
       <form.element @controlType="text" @label="Module Title" @property="name" />
       <form.element @controlType="text" @label="Module Description" @property="description" />
+
       {{#if selectedCourse.name}}
         <form.element @controlType="checkbox" @label="Add this module to {{this.selectedCourse.name}}" @property="x" />
 

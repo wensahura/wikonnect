@@ -7,10 +7,16 @@ import { inject } from '@ember/service';
 export default class CmsDesktopController extends Controller {
 
   createCourseModal = false;
+  editCourseModal = false;
   createModuleModal = false;
   selectedCourse;
   selectedModule;
   selectedLesson;
+
+  myEditCourse;
+
+  @inject
+  notify;
 
   @inject
   me;
@@ -21,11 +27,24 @@ export default class CmsDesktopController extends Controller {
     return name.replace(/\s/g, "-");
   }
 
+  @computed()
+  get allModules() {
+    return this.store.findAll('module');
+  }
+
+  @computed()
+  get allLessons() {
+    return this.store.findAll('lesson');
+  }
+
+
   get coursemodel() {
     return this.store.createRecord('course', {
       creator: this.me.get('user')
     });
   }
+
+
 
   get modulemodel() {
     return this.store.createRecord('module', {
@@ -34,10 +53,36 @@ export default class CmsDesktopController extends Controller {
   }
 
 
+  @action
+  addModule(mod) {
+    this.selectedCourse.get('modules').pushObject(mod);
+    this.set('selectedModule', null);
+    this.selectedCourse.save();
+  }
+
+
+
 
   @action
-  toggleCourseModal() {
-    this.toggleProperty('createCourseModal');
+  showCourseModal() {
+    this.set('createCourseModal', true);
+
+  }
+  @action
+  hideCourseModal() {
+    this.set('createCourseModal', false);
+
+  }
+
+  @action
+  hideEditCourseModal() {
+    this.set("editCourseModal", false);
+
+  }
+
+  @action
+  showEditCourseModal() {
+    this.set("editCourseModal", true);
 
   }
 
@@ -61,6 +106,15 @@ export default class CmsDesktopController extends Controller {
 
   }
 
+
+  @action
+  async editCourseClick(course_slug) {
+    let course_model = await this.store.findBySlug('course', course_slug)
+    this.set("myEditCourse", course_model)
+    this.set("editCourseModal", true);
+
+  }
+
   @action
   async selectModule(module_slug) {
     this.set("selectedLesson", null);
@@ -71,13 +125,23 @@ export default class CmsDesktopController extends Controller {
 
   @action
   saveCourse(model) {
-    console.log(model.name);
+    // console.log(model.name);
     let slug = model.name.replace(/\s/g, "-");
     model.setProperties({
       slug: slug,
-      status: "published"
+      status: "published",
     });
+
     model.save();
+    // this.set("editCourseModal", false);
+    // this.set("createCourseModal", false);
+    //this.notify.info('Course Saved');
+
+  }
+
+  @action
+  deleteCourse(model) {
+    model.destroyRecord();
   }
 
 

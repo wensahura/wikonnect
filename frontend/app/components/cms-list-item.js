@@ -5,16 +5,15 @@ import { action } from '@ember/object';
 export default class CmsListItemComponent extends Component {
 
   @action
-  viewMore() {
-    this.args.viewMore()
+  primaryAction() {
+    this.args.primaryAction()
   }
 
   @action
-  edit() {
-    this.args.edit()
+  secondaryAction() {
+    this.args.secondaryAction()
   }
 
 
 }
 
-\

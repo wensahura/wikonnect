@@ -45,7 +45,7 @@ exports.requireAuth = async function (ctx, next) {
   } catch (e) {
     if (e.statusCode) {
       ctx.throw(e.statusCode, null, { errors: [e.message] });
-    } else { ctx.throw(400, null, { errors: ['Bad Request'] }); }
+    } else { ctx.throw(400, null, { errors: [e.message] }); }
     throw e;
   }
 };
@@ -76,7 +76,7 @@ exports.grantAccess = function (action, resource) {
 
       const permission = roles.can(roleName)[action](resource);
       if (!permission.granted) {
-        ctx.throw(400, null, { errors: ['Bad Request'] });
+        ctx.throw(400, null, { errors: ['Bad Requests'] });
         return ctx;
       }
 
@@ -86,7 +86,8 @@ exports.grantAccess = function (action, resource) {
         // ctx.throw(e.statusCode, { message: 'Bad Request Using Token' });
         ctx.throw(e.statusCode, null, { errors: [e.message] });
       } else {
-        ctx.throw(400, null, { errors: ['Bad Request', e.message] }); }
+        ctx.throw(400, null, { errors: ['Bad Request', e.message] });
+      }
       throw e;
     }
   };

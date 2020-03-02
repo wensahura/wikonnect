@@ -57,7 +57,7 @@ router.get('/', permController.requireAuth, async ctx => {
     if (e.statusCode) {
       ctx.throw(e.statusCode, { message: 'The query key does not exist' });
       ctx.throw(e.statusCode, null, { errors: [e.message] });
-    } else { ctx.throw(400, null, { errors: ['Bad Request'] }); }
+    } else { ctx.throw(400, null, { errors: [e.message] }); }
     throw e;
   }
 });
@@ -106,6 +106,7 @@ router.get('/:id', permController.requireAuth, async ctx => {
 
 
 router.post('/', permController.grantAccess('createAny', 'path'), validateCourses, async ctx => {
+  console.log('posting course');
 
   let { modules, ...newCourse } = ctx.request.body.course;
 
@@ -115,7 +116,9 @@ router.post('/', permController.grantAccess('createAny', 'path'), validateCourse
   } catch (e) {
     if (e.statusCode) {
       ctx.throw(e.statusCode, null, { errors: [e.message] });
-    } else { ctx.throw(400, null, { errors: ['Bad Request'] }); }
+    } else {
+      ctx.throw(400, null, { errors: e.message });
+    }
     throw e;
   }
   // await insertType('course_modules', modules, course.id);
@@ -148,8 +151,8 @@ router.put('/:id', permController.grantAccess('deleteOwn', 'path'), async ctx =>
   if (!course_record) {
     ctx.throw(400, 'That course does not exist');
   }
-  let { modules, progress, ...newCourse } = ctx.request.body.course;
-  console.log(newCourse, modules, progress);
+  let { modules, ...newCourse } = ctx.request.body.course;
+  console.log(newCourse, modules);
 
   let course;
   try {
@@ -157,7 +160,7 @@ router.put('/:id', permController.grantAccess('deleteOwn', 'path'), async ctx =>
   } catch (e) {
     if (e.statusCode) {
       ctx.throw(e.statusCode, null, { errors: [e.message] });
-    } else { ctx.throw(400, null, { errors: ['Bad Request', e.message] }); }
+    } else { ctx.throw(400, null, { errors: ['Bad Requestx', e.message] }); }
     throw e;
   }
 

@@ -1,14 +1,17 @@
 <div class="padded">
   <h5>{{@title}}</h5>
-  <div>{{@description}}</div>
+  <div>{{line-clamp text= @description lines=2}}</div>
 
   <div>
-    <button class="btn btn-warning btn-sm w-30" {{action "edit"}}>
-      {{@editLabel}} </button>
-
-    <button class="btn btn-success btn-sm w-30" {{action "viewMore"}}>
-      {{@viewMoreLabel}}
-    </button>
+    {{#if @secondaryLabel}}
+      <button class="btn btn-warning btn-sm w-30" {{action "secondaryAction"}}>
+        {{@secondaryLabel}} </button>
+    {{/if}}
+    {{#if @primaryLabel}}
+      <button class="btn btn-success btn-sm w-30" {{action "primaryAction"}}>
+        {{@primaryLabel}}
+      </button>
+    {{/if}}
   </div>
   <hr>
 </div>

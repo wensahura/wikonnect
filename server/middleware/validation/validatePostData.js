@@ -35,6 +35,7 @@ const validate = require('validate.js');
  *
 */
 async function validateCourses(ctx, next) {
+  console.log('validating');
 
   try {
     await validate.async(ctx.request.body.course, {
@@ -59,6 +60,8 @@ async function validateCourses(ctx, next) {
       }
     });
   } catch (e) {
+    console.log('iko shida');
+    console.log(e);
     if (e.statusCode) {
       ctx.throw(e.statusCode, null, { errors: e });
     } else { ctx.throw(400, null, { errors: e }); }
@@ -161,7 +164,7 @@ async function validateModules(ctx, next) {
   } catch (e) {
     if (e.statusCode) {
       ctx.throw(e.statusCode, null, { errors: e });
-    } else { ctx.throw(400, null, { errors: e}); }
+    } else { ctx.throw(400, null, { errors: e }); }
     throw e;
   }
   await next();
