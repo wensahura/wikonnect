@@ -1,51 +1,90 @@
 {{outlet}}
+<div>
+  {{#if me.isAuthenticated}}
 
-{{#if me.isAuthenticated}}
-
-  <div class="text-center">
-    <br>
-    <img class="rounded-circle" width="300px" alt="" src={{profileImage}}>
-
-    <br>
-
-    <br>
-    {{#unless complete}}
+    {{#if (eq stage "init")}}
 
 
-      <Forms::Upload @multiple="false" @accept="image/*" @filesSelected={{action "uploadPic"}}
-        @disabled={{uploader.uploading}}>
-        {{#if uploader.uploading}}
-          Uploading... <span class="loading-spinner"></span> {{uploader.progress}}%
-        {{else}}
-          Upload Profile Picture
-        {{/if}}
-      </Forms::Upload>
-    {{/unless}}
-    {{#if signup}}
+      <div class="form">
+        <div class="card-body padded">
+          <BsForm @formLayout="vertical" @model={{this}} @onSubmit={{action "next"}} as |chapterForm|>
+            <chapterForm.element @value={{this.name}} @label="Name" @placeholder="Name" @property="name"
+              @required={{true}} />
+            <chapterForm.element @controlType="textarea" @label="Description" @property="description" />
+            <div class="form-actions">
+              <Forms::Upload @multiple="false" @required={{true}} @accept=".h5p" @filesSelected={{action "fileAdded"}}>
+                {{#if uploader.uploading}}
+                  Uploading... <span class="loading-spinner"></span> {{uploader.progress}}%
+                {{else}}
+                  Upload h5P
+                {{/if}}
+              </Forms::Upload>
+              <BsButton @defaultText="Submit" @type="primary" @buttonType="submit" />
+            </div>
+          </BsForm>
+        </div>
 
-      <br><br>
-      {{#link-to "home"}}
-        {{#if complete}}
-          <button type="button" class="btn btn-success">Proceed</button>
-        {{else}}
-          Skip
-        {{/if}}
+      </div>
 
-      {{/link-to}}
     {{else}}
-      {{#if complete}}
-        {{#link-to "profile"}}
-          <br>
-          <button type="button" class="btn btn-success">Back to profile</button>
-        {{/link-to}}
+      <div class="form row">
 
-      {{/if}}
+
+
+        <div class="col-lg-8 col-sm-1 mt-3">
+          <BsTab as |tab|>
+
+
+            <tab.pane @title="Plain Background">
+              <div class="pt-3 pl-3">
+                Background Color {{color-picker
+  value=value
+  default="#e04e39"
+  format="hexa"
+  saveLabel="Set Color"
+}}
+                <br>
+                Text Color {{color-picker
+  value=value
+  default=this.text_color
+                format="hexa"
+                saveLabel="Set Color"
+                }}
+              </div>
+            </tab.pane>
+            <tab.pane @title="Upload Image">
+              <div>
+                <Forms::Upload @multiple="false" @accept="image/*" @filesSelected={{action "uploadPic"}}
+                  @disabled={{uploader.uploading}}>
+                  {{#if uploader.uploading}}
+                    Uploading... <span class="loading-spinner"></span> {{uploader.progress}}%
+                  {{else}}
+                    Upload Thumbnail
+                  {{/if}}
+                </Forms::Upload>
+              </div>
+            </tab.pane>
+            {{!-- <tab.pane @title="Select Related Image from Unsplash">2
+            </tab.pane> --}}
+          </BsTab>
+
+
+        </div>
+        <div class="col-lg-4 col-md-1 col-sm-1 mt-3">
+          <img width="100%" class="rounded" src="{{this.thumbnail}}" alt="">
+          Thumbnail Preview<br>
+          <button class="form-input mt-3 btn btn-success btn-block"> Done</button>
+          <button class="form-input mt-3 btn btn-warning btn-block"> Back</button>
+
+
+        </div>
+      </div>
     {{/if}}
-  </div>
 
+  {{else}}
 
-{{else}}
+    <Warning @message="You do not have  permission to view this page" />
 
-  <Warning @message="You do not have  permission to view this page" />
+  {{/if}}
 
-{{/if}}
+</div>

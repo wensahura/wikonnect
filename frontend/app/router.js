@@ -9,7 +9,12 @@ export default class Router extends EmberRouter {
 Router.map(function () {
   this.route('signup');
   this.route('login');
+
   this.route('home');
+
+
+
+
 
   this.route('course', function () {
     this.route('index', {
@@ -64,7 +69,7 @@ Router.map(function () {
 
   );
 
-  this.route('profile');
+
   this.route('search');
   this.route('about');
 
@@ -129,6 +134,14 @@ Router.map(function () {
     );
   });
   this.route('upload');
+  this.route('profile-image-upload');
+
+  this.route('pe');
+  this.route('profile', function () {
+    this.route('public', {
+      path: '/:user_slug'
+    });
+  });
 }
 
 );

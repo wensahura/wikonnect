@@ -1,0 +1,11 @@
+<div class="card mt-3 m-2 flex-fill  p-0" style="width:300px">
+  <img class="card-img-top" src="http://placehold.jp/14/ff0000/ffffff/200x140.png?text={{@name}}" alt="Card image">
+  <div class="card-body">
+    <h4 class="card-title">{{@name}}</h4>
+    <p class="card-text">{{@description}}</p>
+    {{#link-to "chapter" @id}}
+      <button class="btn btn-primary form-control">Check it out</button>
+
+    {{/link-to}}
+  </div>
+</div>

@@ -19,4 +19,4 @@ export default class H5pComponent extends Component {
     await new H5P(el, h5pLocation, options);
   }
 
-}
+} 

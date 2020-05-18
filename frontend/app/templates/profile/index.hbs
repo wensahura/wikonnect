@@ -1,1 +1,8 @@
 {{outlet}}
+
+{{#if me.isAuthenticated}}
+  <Profile::PrivateProfile @profileView={{view}} @save={{action "saveUser"}} @model={{model}} />
+{{else}}
+  <Warning @message="You do not have  permission to view this page" />
+
+{{/if}}
