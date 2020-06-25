@@ -20,26 +20,17 @@ export default class CoursesController extends Controller {
   //     display: false
   //   }
   // }
-  @computed('model.[]')
-  get dataS() {
-    return this.model.map((dashboard) => {
-      let dataNum = [];
-      dataNum.push(dashboard.get('achieved'));
-      return dataNum;
-    });
-  }
+  // @computed('model.[]')
+  // get dataS() {
+  //   return this.model.map((dashboard) => {
+  //     let dataNum = [];
+  //     dataNum.push(dashboard.get('achieved'));
+  //     return dataNum;
+  //   });
+  // }
 
   @computed('model.[]')
   get k1Data() {
-    function dataS(){
-      return this.model.map((dashboard) => {
-        let dataNum = "";
-        dataNum.append(dashboard.get('achieved'));
-        console.log(dashboard.get('achieved'));
-        return dataNum;
-      });
-    }
-    console.log(this.dataS);
     return {
 
       labels: ["Q1 20", "Q2 20", "Q3 20", "Q4 20", "Q1 21", "Q2 21", "Q3 21",],

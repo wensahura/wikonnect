@@ -32,15 +32,6 @@ export default class AdminAccountsController extends Controller {
         backgroundColor: "rgb(153, 102, 255)",
         hoverBackgroundColor: "rgb(153, 102, 255)",
         hoverRadius: 15,
-      },
-      animation: {
-        duration: 2000000,
-        onProgress: function (animation) {
-          progress.value = animation.animationObject.currentStep / animation.animationObject.numSteps;
-        },
-        onComplete: function (animation) {
-          progress.value = 0;
-        }
       }
     }
   }
