@@ -100,7 +100,7 @@ async function getProfileImage(id) {
       return image;
     }
   } catch (e) {
-    return 'images/profile-placeholder.gif';
+    return 'images/profile-placeholder-e7547c1d5fd37770b66ab6f122a93060.gif';
   }
 }
 async function createPasswordHash(ctx, next) {
@@ -157,11 +157,7 @@ router.post('/', validateAuthRoutes.validateNewUser, createPasswordHash, async c
   try {
     const user = await User.query().insertAndFetch(newUser);
     await knex('group_members').insert({ 'user_id': user.id, 'group_id': role });
-    let data = await knex('user_invite').where({ id: inviteInsert[0].id }).update({ user_id: user.id }, ['id', 'invited_by', 'user_id']);
-
-    console.log('--------------------------------------------------------');
-    console.log(data);
-    console.log('--------------------------------------------------------');
+    await knex('user_invite').where({ id: inviteInsert[0].id }).update({ user_id: user.id }, ['id', 'invited_by', 'user_id']);
 
     log.info('Created a user with id %s with username %s with the invite code %s', user.id, user.username, user.inviteCode);
 
