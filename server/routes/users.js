@@ -100,7 +100,7 @@ async function getProfileImage(id) {
       return image;
     }
   } catch (e) {
-    return 'images/profile-placeholder.gif';
+    return 'images/profile-placeholder-e7547c1d5fd37770b66ab6f122a93060.gif';
   }
 }
 async function createPasswordHash(ctx, next) {

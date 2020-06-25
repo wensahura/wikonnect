@@ -22,10 +22,9 @@ module.exports = function (defaults) {
       importBootstrapFont: false,
       'importBootstrapCSS': false
     },
-
     svgJar: {
       sourceDirs: [
-        'public/images/icons'
+        'public/images/icons',
       ]
     }
   });
